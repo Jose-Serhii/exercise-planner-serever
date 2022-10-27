@@ -3,8 +3,12 @@ const router = require("express").Router();
 const mongoose = require("mongoose");
 
 const Exercise = require("../models/Exercise.model");
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 
-router.post("/exercises", (req, res, next) => {
+
+
+//CREATE NEW EXERCISE
+router.post("/exercises", isAuthenticated, (req, res, next) => {
   const {
     title,
     category,
@@ -41,6 +45,9 @@ router.post("/exercises", (req, res, next) => {
       });
     });
 });
+
+
+//GET ALL EXERCISES
 router.get("/exercises", (req, res, next) => {
   Exercise.find()
     .then((allExercises) => {
@@ -56,6 +63,7 @@ router.get("/exercises", (req, res, next) => {
       });
     });
 
+  //GET EXERCISE ID
   router.get('/exercises/:exerciseId', (req, res, next) => {
     const { exerciseId } = req.params;
 
@@ -71,10 +79,12 @@ router.get("/exercises", (req, res, next) => {
       });
   });
 
-  router.put('/exercises/:exerciseId', (req, res, next) => {
+  router.put('/exercises/:exerciseId', isAuthenticated, (req, res, next) => {
     const { exerciseId } = req.params;
 
 
+
+    //UPDATE EXERCISE
     Exercise.findByIdAndUpdate(exerciseId, req.body, { new: true })
       .then((updatedExercise) => res.json(updatedExercise))
       .catch(err => {
@@ -87,13 +97,16 @@ router.get("/exercises", (req, res, next) => {
   });
 
 
-
-  router.delete('/exercises/:exerciseId', (req, res, next) => {
+  //DELETE EXERCISE
+  router.delete('/exercises/:exerciseId', isAuthenticated, (req, res, next) => {
     const { exerciseId } = req.params;
 
 
     Exercise.findByIdAndRemove(exerciseId)
       .then(() => res.json({ message: `Exercise with ${exerciseId} is removed successfully.` }))
+
+
+
       .catch(err => {
         console.log("error deleting exercise...", err);
         res.status(500).json({

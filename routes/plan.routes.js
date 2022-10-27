@@ -1,12 +1,14 @@
 const PlanModel = require("../models/Plan.model");
 const Plan = require("../models/Plan.model");
 const router = require("express").Router()
+const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 
 
 
-// GET CREATE
-router.post("/plans", (req, res, next) => {
+
+//CREATE NEW PLAN
+router.post("/plans", isAuthenticated, (req, res, next) => {
   const { day, date, activities, description } = req.body;
   const newPlan = {
     day,
@@ -33,7 +35,7 @@ router.get("/plans", (req, res, next) => {
     .populate({ path: "activities.exercise" })
     .then((allPlans) => {
       res.json(allPlans);
-      console.log(allPlans);
+
     })
 
     .catch((err) => {
@@ -54,6 +56,7 @@ router.get('/plans/:planId', (req, res, next) => {
 
   Plan.findById(planId)
     .then((plan) => res.json(plan))
+
     .catch((err) => {
       console.log("error getting plan details...", err);
       res.status(500).json({
@@ -64,12 +67,19 @@ router.get('/plans/:planId', (req, res, next) => {
 });
 
 //UPDATE PLANS
-router.put('/plans/:planId', (req, res, next) => {
+router.put('/plans/:planId', isAuthenticated, (req, res, next) => {
   const { planId } = req.params;
 
 
   Plan.findByIdAndUpdate(planId, req.body, { new: true })
-    .then((updatedPlan) => res.json(updatedPlan))
+    .then((updatedPlan) => {
+
+      res.json(updatedPlan)
+      { planId.activities }
+
+    })
+
+
     .catch(err => {
       console.log("error updating plan...", err);
       res.status(500).json({
@@ -79,9 +89,8 @@ router.put('/plans/:planId', (req, res, next) => {
     });
 
   //DELETE PLANS
-  router.delete('/plans/:planId', (req, res, next) => {
+  router.delete('/plans/:planId', isAuthenticated, (req, res, next) => {
     const { planId } = req.params;
-
 
     Plan.findByIdAndRemove(planId)
       .then(() => res.json({ message: `Plan with ${planId} is removed successfully.` }))
