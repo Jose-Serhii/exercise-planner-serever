@@ -32,7 +32,7 @@ router.post("/plans", isAuthenticated, (req, res, next) => {
 //GET ALL PLANS
 router.get("/plans", (req, res, next) => {
   Plan.find()
-    .populate({ path: "activities.exercise" })
+    .populate({ path: "activities" })
     .then((allPlans) => {
       res.json(allPlans);
 
