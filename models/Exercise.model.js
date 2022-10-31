@@ -12,25 +12,25 @@ const exerciseSchema = new Schema({
   type: {
     type: String,
     enum: [
-      "cardio",
-      "strength",
-      "balance",
-      "flexibility",
-      "coordination",
-      "warm-up",
-      "other",
+      "Cardio",
+      "Strength",
+      "Balance",
+      "Flexibility",
+      "Coordination",
+      "Warm-up",
+      "Other",
     ],
     default: "other",
     required: [true, "Choose the type of exercise"],
   },
   intensity: {
     type: String,
-    enum: ["low", "moderate", "high"],
+    enum: ["Low", "Moderate", "High"],
     required: [true, "Choose the intensity of an exercise"],
   },
   muscle: {
     type: String,
-    enum: ["chest", "back", "arms", "abdominals", "legs", "shoulders", "other"],
+    enum: ["Chest", "Back", "Arms", "Abdominals", "Legs", "Shoulders", "Other"],
     required: [true, "Choose one"],
   },
   specificArea: {
@@ -41,7 +41,7 @@ const exerciseSchema = new Schema({
   },
   timeUnit: {
     type: String,
-    enum: ["minutes", "hours"],
+    enum: ["Minutes", "Hours"],
   },
   imageUrl: {
     type: String,
