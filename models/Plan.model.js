@@ -17,10 +17,8 @@ const planSchema = new Schema({
     type: String,
   },
   activities: [
-    {
-      exercise: { type: Schema.Types.ObjectId, ref: "Exercise" },
-      repetitions: Number,
-    },
+
+    { type: Schema.Types.ObjectId, ref: "Exercise" },
   ],
 
   description: {
