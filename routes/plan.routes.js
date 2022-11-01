@@ -4,7 +4,7 @@ const router = require("express").Router()
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
 
-
+const Exercise = ("../models/Exercise.model.js")
 
 
 //CREATE NEW PLAN
@@ -20,9 +20,9 @@ router.post("/plans", isAuthenticated, (req, res, next) => {
   Plan.create(newPlan)
     .then((response) => res.json(response))
     .catch((err) => {
-      console.log("error creating a new project...", err);
+      console.log("error creating a new plan...", err);
       res.status(500).json({
-        message: "error creating a new project",
+        message: "error creating a new plan",
         error: err,
       });
     });
@@ -55,7 +55,14 @@ router.get('/plans/:planId', (req, res, next) => {
 
 
   Plan.findById(planId)
-    .then((plan) => res.json(plan))
+
+    .populate({ path: "activities" })
+    .then((plan) => {
+      console.log(plan)
+      res.json(plan)
+    })
+
+
 
     .catch((err) => {
       console.log("error getting plan details...", err);
