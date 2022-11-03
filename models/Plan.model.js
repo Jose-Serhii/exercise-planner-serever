@@ -24,6 +24,14 @@ const planSchema = new Schema({
   description: {
     type: String,
   },
+  creator: {
+    type: Schema.Types.ObjectId,
+    ref: "User"
+  },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User"
+  }
 });
 
 module.exports = model("Plan", planSchema);

@@ -48,11 +48,11 @@ router.post("/exercises", isAuthenticated, (req, res, next) => {
 
 
 //GET ALL EXERCISES
-router.get("/exercises", (req, res, next) => {
+router.get("/exercises", isAuthenticated, (req, res, next) => {
   Exercise.find()
     .then((allExercises) => {
       res.json(allExercises);
-      console.log(allExercises);
+
     })
 
     .catch((err) => {

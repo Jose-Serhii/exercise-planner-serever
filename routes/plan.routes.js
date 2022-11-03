@@ -1,11 +1,7 @@
 const PlanModel = require("../models/Plan.model");
 const Plan = require("../models/Plan.model");
-const router = require("express").Router()
+const router = require("express").Router();
 const { isAuthenticated } = require("../middleware/jwt.middleware");
-
-
-const Exercise = ("../models/Exercise.model.js")
-
 
 //CREATE NEW PLAN
 router.post("/plans", isAuthenticated, (req, res, next) => {
@@ -28,14 +24,12 @@ router.post("/plans", isAuthenticated, (req, res, next) => {
     });
 });
 
-
 //GET ALL PLANS
-router.get("/plans", (req, res, next) => {
+router.get("/plans", isAuthenticated, (req, res, next) => {
   Plan.find()
     .populate({ path: "activities" })
     .then((allPlans) => {
       res.json(allPlans);
-
     })
 
     .catch((err) => {
@@ -45,71 +39,60 @@ router.get("/plans", (req, res, next) => {
         error: err,
       });
     });
-
 });
 
-
 //GET PLANS BY ID
-router.get('/plans/:planId', (req, res, next) => {
+router.get("/plans/:planId", (req, res, next) => {
   const { planId } = req.params;
 
-
   Plan.findById(planId)
-
     .populate({ path: "activities" })
-    .then((plan) => {
-      console.log(plan)
-      res.json(plan)
-    })
-
-
+    .then((plan) => res.json(plan))
 
     .catch((err) => {
       console.log("error getting plan details...", err);
       res.status(500).json({
         message: "error getting plan details...",
-        error: err
-      })
+        error: err,
+      });
     });
 });
 
 //UPDATE PLANS
-router.put('/plans/:planId', isAuthenticated, (req, res, next) => {
+router.put("/plans/:planId", isAuthenticated, (req, res, next) => {
   const { planId } = req.params;
-
 
   Plan.findByIdAndUpdate(planId, req.body, { new: true })
     .then((updatedPlan) => {
-
-      res.json(updatedPlan)
-      { planId.activities }
-
+      res.json(updatedPlan);
+      {
+        planId.activities;
+      }
     })
 
-
-    .catch(err => {
+    .catch((err) => {
       console.log("error updating plan...", err);
       res.status(500).json({
         message: "error updating plan...",
-        error: err
-      })
+        error: err,
+      });
     });
 
   //DELETE PLANS
-  router.delete('/plans/:planId', isAuthenticated, (req, res, next) => {
+  router.delete("/plans/:planId", isAuthenticated, (req, res, next) => {
     const { planId } = req.params;
 
     Plan.findByIdAndRemove(planId)
-      .then(() => res.json({ message: `Plan with ${planId} is removed successfully.` }))
-      .catch(err => {
+      .then(() =>
+        res.json({ message: `Plan with ${planId} is removed successfully.` })
+      )
+      .catch((err) => {
         console.log("error deleting plan...", err);
         res.status(500).json({
           message: "error deleting plan...",
-          error: err
-        })
+          error: err,
+        });
       });
   });
-
-
 });
 module.exports = router;
