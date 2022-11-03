@@ -6,11 +6,13 @@ const { isAuthenticated } = require("../middleware/jwt.middleware");
 //CREATE NEW PLAN
 router.post("/plans", isAuthenticated, (req, res, next) => {
   const { day, date, activities, description } = req.body;
+  const owner = req.payload._id
   const newPlan = {
     day,
     date,
     activities,
     description,
+    owner
   };
 
   Plan.create(newPlan)
@@ -26,7 +28,7 @@ router.post("/plans", isAuthenticated, (req, res, next) => {
 
 //GET ALL PLANS
 router.get("/plans", isAuthenticated, (req, res, next) => {
-  Plan.find()
+  Plan.find({ owner: req.payload._id })
     .populate({ path: "activities" })
     .then((allPlans) => {
       res.json(allPlans);

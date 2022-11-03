@@ -1,7 +1,5 @@
 const router = require("express").Router();
-
 const mongoose = require("mongoose");
-
 const Exercise = require("../models/Exercise.model");
 const { isAuthenticated } = require("../middleware/jwt.middleware");
 
@@ -21,6 +19,8 @@ router.post("/exercises", isAuthenticated, (req, res, next) => {
     imageUrl,
     description,
   } = req.body;
+  const owner = req.payload._id
+
 
   const newExercise = {
     title,
@@ -33,10 +33,16 @@ router.post("/exercises", isAuthenticated, (req, res, next) => {
     timeUnit,
     imageUrl,
     description,
+    owner,
   };
 
   Exercise.create(newExercise)
-    .then((response) => res.json(response))
+    .then((response) => {
+      console.log("this is the owner", owner)
+      res.json(response)
+    })
+
+
     .catch((err) => {
       console.log("error creating a new exercise...", err);
       res.status(500).json({
@@ -49,7 +55,7 @@ router.post("/exercises", isAuthenticated, (req, res, next) => {
 
 //GET ALL EXERCISES
 router.get("/exercises", isAuthenticated, (req, res, next) => {
-  Exercise.find()
+  Exercise.find({ owner: req.payload._id })
     .then((allExercises) => {
       res.json(allExercises);
 
